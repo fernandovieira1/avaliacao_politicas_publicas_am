@@ -1,0 +1,156 @@
+---
+title: "**Avaliação de Políticas Públicas usando o R**"
+subtitle: "Apresentação do Curso"
+author: "Vítor Wilher"
+output: 
+  beamer_presentation:
+    #theme: "Boadilla"
+    slide_level: 2
+    fig_width: 8
+    fig_height: 4
+    fig_caption: true
+    citation_package: 'natbib'
+    includes:
+      in_header: beamer.txt
+      before_body: toc.txt
+bibliography: 'ref.bib'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+def.chunk.hook  <- knitr::knit_hooks$get("chunk")
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- def.chunk.hook(x, options)
+  ifelse(options$size != "normalsize", paste0("\\", options$size,"\n\n", x, "\n\n \\normalsize"), x)
+})
+
+```
+
+
+# Introdução
+## Introdução
+
+Nas últimas décadas, com o crescimento da literatura econométrica sobre avaliação de impacto, houve um aumento considerável do interesse e do uso dessas metodologias para avaliar tanto políticas públicas quanto projetos sociais ao redor do mundo. 
+
+## Introdução
+
+Apesar desse salutar crescimento de `métodos` e `aplicações`, no Brasil, ainda é escasso o número de profissionais com o conhecimento dessas técnicas. 
+
+\bigskip
+
+São poucas as universidades com Cursos específicos voltados para a avaliação de impacto de *políticas públicas* e *projetos sociais*. 
+
+## Introdução
+
+Isso dito e pensando em contribuir com a proliferação de **políticas públicas baseadas em evidências**, decidimos criar aqui na Análise Macro o Curso de *Avaliação de Políticas Públicas usando o R*.
+
+## Introdução
+
+O objetivo principal do Curso é capacitar os alunos em métodos econométricos de avaliação de impacto. 
+
+\bigskip
+
+O Curso cobre as principais metodologias de avaliação de impacto, com foco principal na aplicação das mesmas.^[O curso é baseado, por exemplo, em @aer, @wooldridge, @sw, @peixoto2012avaliaccao, @heckman2008econometric, @card1993using, @blackburn1993omitted, @chamon2017fx, @chamon2019electoral, @mattos2019assessing, @andrade2012income, @angrist2008mostly, @gertler2016impact, dentre outros.]
+
+# Benefícios do Curso
+## Benefícios do Curso
+
+Com o aumento da disponibilidade de bases de dados, o profissional que saiba aplicar esse tipo de metodologia tem sido bastante demandando no mercado, seja em consultorias, grandes empresas, organizações não governamentais e, por óbvio, dentro do setor público.
+
+\bigskip
+
+O treinamento em métodos quantitativos de avaliação de impacto certamente contribuirá para que você se torne um profissional disputado no mercado. 
+
+# Para quem é
+## Para quem é
+
+O **Curso de Avaliação de Políticas Públicas usando o R** é especialmente voltado para:
+
+\bigskip
+
+- Estudantes de graduação e pós-graduação de diferentes áreas que tenham por objetivo atuar com a avaliação de programas sociais e políticas públicas;
+- Professores de ensino superior que publicam na área;
+- Profissionais de mercado em busca de ferramentas mais poderosas de análise de dados.
+
+# Pré-requisitos
+## Pré-requisitos
+
+O **Curso de Avaliação de Políticas Públicas usando o R** conta como *bônus* o nosso **Curso de R para Análise de Dados**, de modo que não é preciso ter conhecimento da linguagem para fazer nosso Curso.
+
+\bigskip
+
+O aluno que tenha tido contato com **Estatística e Econometria Básicas** terá como aproveitar melhor o Curso, mas as mesmas não configuram pré-requisito, uma vez que tudo que for necessário para o entendimento do conteúdo será desenvolvido dentro do escopo do Curso.
+
+
+# Programa detalhado do Curso
+## Programa detalhado do Curso
+
+O Curso se divide em 8 seções, além dessa apresentação. Para começar, os alunos do Curso de **Avaliação de Políticas Públicas usando o R** terão acesso ao conteúdo integral do Curso de **R para Análise de Dados** da Análise Macro, que contém videoaulas, slides e scripts bem didáticos e explicados de introdução à linguagem `R`. 
+
+
+## Programa detalhado do Curso
+
+Feita a imersão no `R`, o aluno é introduzido ao mundo da avaliação de impacto, na seção 2, por meio de uma ampla revisão da literatura. 
+
+\bigskip
+
+As seções 3 e 4 cobrem o modelo de resultados potenciais e o método de aleatorização, enquanto as seções 5 a 8 mostram os principais métodos econométricos adotados pela literatura. 
+
+\bigskip
+
+A seção 9 encerra o programa com o cálculo do retorno econômico de políticas públicas e projetos sociais.
+
+## Programa detalhado do Curso
+
+1. Apresentação do Curso
+2. Introdução à Avaliação de Impacto
+3. Modelo de Resultados Potenciais
+4. Método de Aleatorização
+5. Diferenças em Diferenças e Controle Sintético
+6. Pareamento
+7. Variáveis Instrumentais
+8. Regressão Descontínua
+9. O cálculo do retorno econômico
+
+# Materiais do Curso
+## Materiais do Curso
+
+**Vídeos Gravados para você assistir quando quiser**
+
+Cada seção será acompanhada de um vídeo gravado que conduzirá o aluno em todos os passos.
+
+\bigskip
+
+**Slides de Alta Qualidade**
+
+Cada seção do curso conta com slides contendo a teoria e os códigos de R de modo que o aluno possa reproduzir o passo a passo que é ensinado nas videoaulas.
+
+**Exemplos práticos**
+
+Para que o aluno possa praticar os conceitos vistos, cada seção é recheada de exemplos práticos que podem ser rodados no R.
+
+# Como você vai fazer o Curso
+## Como você vai fazer o Curso
+
+Nosso Curso é 100% adaptável à sua rotina de trabalho ou estudo. Você escolhe o melhor horário para assistir aos vídeos gravados e aprofundar o tema da videoaula replicando o exercício realizado pelo professor. Todos os códigos utilizados são disponibilizados para que o aluno possa aprender de forma autônoma. 
+
+\bigskip
+
+Os alunos inscritos no Curso terão acesso a todo o material digital e às videoaulas por 1 ano. Poderão tirar dúvidas com o professor em plataforma exclusiva.
+
+# Sobre os Professores
+## Sobre os Professores
+
+**Vítor Wilher** é Bacharel e Mestre em Economia, pela Universidade Federal Fluminense, especialista em Data Science pela Johns Hopkins University e um dos professores pioneiros na oferta de Cursos de R no Brasil. Sua dissertação de mestrado foi na área de política monetária, titulada "Clareza da Comunicação do Banco Central e Expectativas de Inflação: evidências para o Brasil", defendida perante banca composta pelos professores Gustavo H. B. Franco (PUC-RJ), Gabriel Montes Caldas (UFF), Carlos Enrique Guanziroli (UFF) e Luciano Vereda Oliveira (UFF). Já trabalhou em grandes empresas, nas áreas de telecomunicações, energia elétrica, consultoria financeira e consultoria macroeconômica. Atualmente, é Sócio-fundador da Análise Macro e Palestrante. Caso queira, mande um e-mail para ele: vitorwilher@analisemacro.com.br.
+
+## Sobre os Professores
+
+**Vitor Ostrensky** é Bacharel e Mestre em Economia, pela Universidade Federal do Paraná e Doutorando em Economia pela mesma instituição. Tem forte domínio de R, Python e SQL. Já trabalhou em Consultorias como economista e como Data Scientist. Atualmente, é um dos analistas da área de Produtos da Análise Macro. 
+
+# Certificado
+## Certificado
+
+Os alunos inscritos nessa edição do Curso têm acesso a Certificado de 60 horas para fins de atividades complementares de cursos de graduação ou pós-graduação, bem como na sua empresa. Para ter acesso ao certificado, o aluno deverá entregar mais do que 70% das atividades propostas ao longo do Curso no prazo de 12 meses. 
+
+
+# Referências

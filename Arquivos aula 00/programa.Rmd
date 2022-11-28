@@ -1,0 +1,45 @@
+---
+title: "**Avaliação de Políticas Públicas usando o R**"
+subtitle: 'Programa do Curso'
+author: "Vítor Wilher, Mestre em Economia e Cientista de Dados"
+output: 
+  pdf_document:
+    number_sections: true
+    includes:
+      in_header: header.tex
+bibliography: 'references.bib'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ementa do Curso
+
+Nas últimas décadas, com o crescimento da literatura econométrica sobre avaliação de impacto, houve um aumento considerável do interesse e do uso dessas metodologias para avaliar tanto políticas públicas quanto projetos sociais. Com efeito, o objetivo do Curso de *Avaliação de Políticas Públicas usando o R* é capacitar alunos de graduação e pós-graduação, professores e profissionais de mercado em métodos econométricos de avaliação de impacto. O Curso cobre as principais metodologias de avaliação de impacto, com foco principal na aplicação das mesmas.^[O curso é baseado, essencialmente em @aer, @wooldridge, @sw, @itau e em papers acadêmicos selecionados pelo professor.]
+
+# Programa Detalhado
+
+\begin{enumerate}
+
+  \item Introdução à avaliação de impacto;
+  
+  \item Modelo de Resultados Potenciais;
+
+  \item Método de Aleatorização;
+
+  \item Diferenças em Diferenças;
+  
+  \item Pareamento;
+  
+  \item Variáveis Instrumentais;
+  
+  \item Regressão Descontínua;
+  
+  \item O cálculo do retorno econômico;
+  
+\end{enumerate}
+
+
+# Referências
+

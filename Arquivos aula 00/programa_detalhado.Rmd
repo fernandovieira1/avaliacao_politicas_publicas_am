@@ -1,0 +1,67 @@
+---
+title: '**Avaliação de Políticas Públicas usando o R**'
+author: "Vítor Wilher, Mestre em Economia e Cientista de Dados"
+subtitle: Programa detalhado do Curso
+output:
+  word_document: default
+  pdf_document:
+    number_sections: yes
+    includes:
+      in_header: header.tex
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ementa do Curso
+
+Nas últimas décadas, com o crescimento da literatura econométrica sobre avaliação de impacto, houve um aumento considerável do interesse e do uso dessas metodologias para avaliar tanto políticas públicas quanto projetos sociais. Com efeito, o objetivo do Curso de *Avaliação de Políticas Públicas usando o R* é capacitar alunos de graduação e pós-graduação, professores e profissionais de mercado em métodos econométricos de avaliação de impacto. O Curso cobre as principais metodologias de avaliação de impacto, com foco principal na aplicação das mesmas.^[O curso é baseado, essencialmente em @aer, @wooldridge, @sw, @itau e em papers acadêmicos selecionados pelo professor.]
+
+# Programa Detalhado
+
+- **Introdução à avaliação de impacto**: o uso de políticas públicas baseadas em evidências passa pelo fato simples de que os recursos são escassos. Além disso, a avaliação do impacto é importante para medir não somente se a ação governamental conseguiu ter efeito, mas também mensurar a magnitude do resultado, o que é necessário para estimar o custo benefício da política. 
+
+A utilização da avaliação de impacto de uma política pública tem dois tipos de usos principais: Interno e externo. No uso interno ela tem como objetivo subsidiar decisões acerca da operação do programa, a depender dos resultados encontrados. Se forem positivos, podem corroborar para manutenção ou ampliação da política. Se forem negativos, uma diminuição ou cancelamento. Com o maior detalhamento das análises, elas podem auxiliar um processo de redesenho do programa, de forma a aprimorar e potencializar os resultados. Já o uso externo tem como principal objetivo subsidiar a aplicação ou alteração de programas semelhantes em outros lugares ou períodos. Além disso, avaliações servem para a identificação das melhores práticas na área da política em questão, o que permite que policy makers possam implementar políticas com resultados já consagrados em outros lugares.  
+
+Nesse capítulo, além de uma introdução ao problema de avaliação de impacto de programas e políticas públicas, também fazemos uma resenha da literatura aplicada e dos principais métodos associados. 
+  
+- **Modelo de Resultados Potenciais**: O modelo de resultados potenciais, ou modelo causal de Rubin [@rubin2004direct], é uma abordagem que visa estimar o efeito causal do tratamento com base nos resultados que potencialmente o mesmo indivíduo teria sem o tratamento. Nessa seção, vamos detalhar o modelo, bem como buscar exemplos no R de como isso pode ser feito.
+
+- **Método de Aleatorização**: o principal objetivo da atribuição aleatória é evitar o viés de seleção. Como esse tipo de abordagem, as características dos indivíduos, que podem influenciar o resultado, são aleatorizadas entre os grupos. Olhando pela ótica do modelo de resultados potenciais, essa é a forma mais semelhante possível ao contrafactual ideal. Não podemos observar o mesmo grupo de indivíduos sendo tratados ou não-tratados ao mesmo tempo, mas podemos identificar grupos que seriam totalmente homogêneos se não fosse a presença da política em um deles.  Assim, qualquer diferença de resultado na variável de interesse entre o grupo tratado e de controle possa ser explicada apenas pelo tratamento. O que gera, portanto, grande validação interna dos resultados encontrados.
+
+Essa técnica é comumente chamada de \textit{Randomized controlled trial} (RCT) ou, em português, estudo clínico randomizado controlado. Os estudos do tipo RCT são o padrão ouro da ciência há muitas decadas. São principalmente utilizados em testes clínicos ou farmacêuticos, como é o caso dos estudos de vacinas contra o Coronavírus. Entretanto, nas áreas de avaliação de políticas públicas e economia sua utilização começou a ter mais relevância apenas nos últimos anos. Mas isso não quer dizer que não haviam estudos desse tipo. Entre alguns exemplos notáveis estão o experimento RAND [@manning1987health], que avaliou o comportamento dos usuários de planos de saúde em relação aos valores de coparticipação e os experimentos sobre imposto de renda negativo [@robins1985comparison].
+
+
+- **Diferenças em Diferenças**: É um método de dados em painel muito popular na literatura econômica que calcula o efeito de um tratamento comparando a mudança média ao longo do tempo na variável de interesse para os trados, em comparação com a mudança média para o grupo de controle. O principal requisito para esse método poder ser aplicado é o de que as tendências de ambos os grupos na variável de interesse sejam paralelas antes do tratamento. Ou seja, a hipótese é de que as diferenças não observáveis entre os grupos se mantenha constante ao longo do tempo. Assim, o efeito do tratamento é o responsável por alterações de trajetória. 
+  
+  Muitas vezes, a hipótese de tendência comum não é atendida, o que faz com que muitos estudos utilizem pareamento para atingir isso. [@mattos2019assessing] utilizam exatamente essa abordagem para estimar o efeitos de curto prazo do programa Mais Médicos, lançado em 2013. Assim, eles usam dados de municípios de 2010 até 2015 e mostram que o programa teve ao menos dois efeitos positivos: o aumento em consultas, agendamentos e visitas a domicílios, e o impacto negativo na hospitalização. Entretanto, não encontraram efeito significativo na mortalidade.  
+  
+\textbf{Controle sintético} - Esse método é de certa forma semelhante a um modelo de diferenças-em-diferenças, mas utilizando normalmente quando há apenas uma unidade trata. É feita a construção de uma combinação linear ponderada da variável de interesse das unidades do grupo de controle antes do tratamento ocorrer, o que faz com que a trajetória dessa combinação se torna semelhante à trajetória da unidade tratada. Assim, se as duas trajetórias divergirem após à implementação de uma política, isso pode se dever ao tratamento.
+  
+Por sua característica, esse é um método interessante para aplicação de avaliação de políticas nacionais. Um exemplo disso é o paper de @chamon2017fx, que avaliou um programa de intervenção cambial por meio de swaps do Banco Central do Brasil em 2013. Utilizando outros países emergentes como controle, eles estimaram que a política levou a uma apreciação do Real em um excedente de 10%. 
+  
+ 
+- **Pareamento**: As técnicas de pareamento são utilizadas quando o tratamento não ocorre de maneira aleatória e os grupos de tratamento e controle acabam apresentando características muito diferentes. Esses métodos têm como objetivo balancear os grupos com base em covariáveis, ou seja, outros dados além da variável de interesse. É preciso que esses dados não sejam afetados pelo tratamento. Por exemplo, em um caso em que haja mais de um período de tempo é adequado parear pelos dados do período anterior ao tratamento. Na prática, essa técnica seleciona os indivíduos do grupo de controle que sejam os mais semelhantes possíveis com relação aos indivíduos que receberam o tratamento. Normalmente, esse procedimento faz com que algumas observações do grupo de controle sejam eliminadas da amostra. 
+  
+O pareamento pode ser feito de maneira exata, isto é, você pareia cada indivíduo tratado com um do grupo de controle com exatamente os mesmos valores nas variáveis definidas para parear. Raramente isso é possível, principalmente quando buscamos parear por valores contínuos (ex: renda). Por isso, a estratégia mais comum é parear utilizando escores de propensão. Resumidamente, é estimada uma regressão logística, em que a variável dependente é o tratamento. Assim, com base nos parâmetros estimados, é calculada a probabilidade do indivíduo pertencer ao grupo de tratamento. Assim, cada indivíduo do grupo de tratamento é pareado com um, ou mais, do grupo de controle que tenham essa probabilidade, ou "escore", semelhante.
+  
+Um exemplo de trabalho que utiliza matching para avaliar uma política pública é  artigo de @andrade2012income. Os autores investigaram os impactos do Programa Bolsa Família na imunização de crianças de 0 a 6 anos utilizando dados de 2005. Nele foram comparadas famílias que estavam no programa com famílias elegíveis, mas não presentes no programa. O ponto principal da utilização deste método é que esses grupos apresentam características diferentes, portanto é necessária uma readequação do grupo de controle. Os resultados encontrados mostraram que o programa não afetou a imunização das crianças.
+  
+- **Variáveis Instrumentais**: É um método que busca uma variável externa (instrumento) que é correlacionada com as variáveis explicativas, mas não com a variável de interesse. Assim, essa técnica permite estimar uma regressão quando as variáveis explicativas são correlacionadas com o termo de erro, ou seja,  quando há endogeneidade. Basicamente, este método permite o instrumento dividir as variáveis explicativas em duas partes. Uma delas é correlacionada com o erro e a outra não. Assim, tornando possível separar a parte que não tem correlação para a estimação da regressão de forma não viesada. A grande dificuldade é encontrar instrumentos que sejam válidos para esse método. Alguns instrumentos se tornaram bastante populares, como é o caso de variáveis ligadas ao clima, principalmente em estudos sobre países com forte presença agrícola. A lógica por trás disso é que a chuva, por exemplo, afeta a produção agrícola, mas não é afetada pelas condições econômicas.
+
+Um exemplo bastante comum do uso de variáveis instrumentais é a estimação do retorno da educação nos salários. Isso acontece pois existe um fator não observável, que é a habilidade pessoal. Pessoas com maior habilidade tem maior probabilidade de fazer ensino superior. Ao mesmo tempo, a habilidade também afeta os salários de forma independente à educação formal. Assim, um bom instrumento precisa ser correlacionado com a probabilidade de ir à universidade, mas não pode ser correlacionado com os salários. @card1993using, propoem estimar o efeito utilizando a distância em relação às universidades. Outros autores, como @blackburn1993omitted, utilizam a educação dos pais como instrumento.
+  
+- **Regressão Descontínua**: O objetivo dessa abordagem é comparar observações que estejam perto de um limite que estabelece um limite entre o grupo de tratamento e o de controle. A lógica desse método é a de que indivíduos próximos a essa limite seriam extremamente semelhantes, sendo a designação para um ou para outro grupo completamente aleatória. A aplicação é possívelmente mais restritiva do que os outros métodos citados e muito dependente dos dados disponíveis e do critério de aplicação da política pública. 
+  
+@chamon2019electoral utilizaram uma descontinuidade nas regras eleitorais municipais de 2000 para investigar se a competição política teria impacto nas escolhas das políticas fiscais. A descontinuidade em questão era a de que, para municípios menores de 200 mil habitantes, não havia segundo turno. Os resultados mostram que a competição faz com que se aumentem os gastos com infraestrutura em relação aos gastos correntes. Além disso, o impacto encontrado foi maior para os casos em que os candidatos poderiam concorrer à reeleição. 
+
+  
+- O cálculo do retorno econômico: Na última seção, explicamos detalhadamente os conceitos e o instrumental necessários para o cálculo desse retorno, incluindo aplicações práticas e um exemplo para que os conceitos sejam sedimentados. Conceitos como valor presente líquido, taxa interna de retorno e custo-efetividade são discutidos nesse capítulo.
+  
+
+
+
+# Referências
+
