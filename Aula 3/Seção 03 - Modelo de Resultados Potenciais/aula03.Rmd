@@ -1,0 +1,259 @@
+---
+title: "Avaliação de Políticas Públicas usando o R"
+author: "Vítor Wilher"
+subtitle: Modelo de resultados potenciais
+output:
+  beamer_presentation:
+    slide_level: 2
+    fig_width: 8
+    fig_height: 4
+    fig_caption: yes
+    citation_package: natbib
+    includes:
+      in_header: beamer.txt
+      before_body: toc.txt
+  slidy_presentation: default
+  ioslides_presentation: default
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+def.chunk.hook  <- knitr::knit_hooks$get("chunk")
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- def.chunk.hook(x, options)
+  ifelse(options$size != "normalsize", paste0("\\", options$size,"\n\n", x, "\n\n \\normalsize"), x)
+})
+
+
+```
+
+
+# Pacotes
+## Pacotes
+
+Os pacotes que usaremos nessa seção estão listados abaixo. Sempre que possível, colocaremos os pacotes utilizados logo no início de cada seção.^[É possível que algum dos pacotes listados tenha sido retirado sem prévio aviso do CRAN. Nesses casos, por favor, entre em contato com o nosso suporte.]
+
+\bigskip
+
+```{r, echo=T, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='tiny'}
+
+library(tidyverse)
+library(truncnorm)
+library(knitr)
+
+set.seed(2021)
+
+```
+
+
+# Modelo de resultados potenciais
+
+## Modelo de resultados potenciais
+
+O modelo de resultados potenciais, ou \textbf{modelo causal de Rubin} [@rubin2004direct], é uma abordagem que visa estimar o efeito causal do tratamento com base nos resultados que potencialmente o mesmo indivíduo teria sem o tratamento. Como explicado na seção anterior, o problema com isso é que é impossível saber o que aconteceria com o indivíduo nesta "realidade alternativa" de não tratamento.
+
+## Efeito causal
+
+Se a variável de interesse para o indivíduo $i$ quando não há tratamento é $\mathrm{Y}_{\mathrm{i}}(\mathrm{0})$ e quando há tratamento é $\mathrm{Y}_{\mathrm{i}}(\mathrm{1})$
+
+O efeito causal médio, derivado do modelo de resultados potenciais, é igual a:
+
+\begin{equation}
+\mathrm{E}\left[\mathrm{Y}_{\mathrm{i}}(1)-\mathrm{Y}_{\mathrm{i}}(0)\right]
+\end{equation}
+
+## Hipótese da ignorabilidade condicional
+
+Como não podemos ter acesso aos dois resultados ao mesmo tempo, não podemos estimar o impacto desta forma. Portanto é necessário incorrer na chamada hipótese da \textbf{"ignorabilidade condicional"}. Ou seja, de que a diferença entre o comportamento da variável de interesse para o grupo tratado e o grupo de controle seja apenas dependente do tratamento e de um conjunto de covariáveis observáveis:
+
+\begin{equation}
+\{Y_{i}(0), Y_{1}(1)\} \perp T \mid X
+\end{equation}
+
+## Hipótese da ignorabilidade condicional
+
+Assim, a \textbf{robustez} do método utilizado para estimar um impacto de uma política passa por quão crível é essa hipótese no caso específico. Cabe mencionar, que essa hipótese não é testável. Um fator muito importante para isso é controlar bem a influência das covariáveis, evitando variáveis não obseráveis. Por isso, é de grande importância a definição do grupo de controle utilizado.
+
+## Hipótese de Valor Estável da Unidade de Tratamento (SUTVA)
+
+Outro ponto é importante é a hipótese de Valor Estável da Unidade de Tratamento \textbf{(SUTVA)}. Ou seja, os resultados potenciais de um indivíduo não podem ser afetados pelo desígnio de tratamente a outros indivídiuos. Ou seja, não podem haver \textbf{spillovers} no estudo. Pode ser complicado evitar a violação desta hipótese em alguns casos. 
+
+## Hipótese de Valor Estável da Unidade de Tratamento (SUTVA)
+
+Por exemplo, digamos que uma empresa deseja analisar o impacto de uma política de treinamento de um setor. Pra isso, ela aleatoriza os funcionários escolhidos e realiza o treinamento. Mesmo que os grupos de tratamento e controle sejam balanceados, possívelmente o efeito estimado da política será menor que o efeito real, pois pode ocorrer um efeito de spillover de conhecimento entre os funcionários dos dois grupos.
+
+
+# Comparando o antes e depois dos tratados
+
+## Comparando o antes e depois dos tratados
+
+O meio mais simples - e possívelmente o mais errado - de se avaliar uma política é comparar a situação dos indivíduos tratados antes e depois da política, sem nenhuma comparação com algum outro grupo que não sofreu a intervenção. Quando se faz isso, a hipótese implícita em que o avaliador incorre é a de que a situação dos grupos tratados permaneceria a mesma sem a política. Ou seja, que a variável de interesse é estática. Essa hipótese é \emph{infactível} para quase qualquer avaliação de impacto.
+
+## Comparando o antes e depois dos tratados - Exemplo
+
+Assim, utilizando o exemplo feito na primeira seção, que trata de uma política hipotética de transferência de renda, podemos estimar o efeito encontrado por esse tipo de abordagem. Imagine que por algum motivo não tenhamos acesso aos dados do grupo de controle. Neste caso, estimaremos o impacto do tratamento por meio da diferença entre a média da renda do grupo de tratamento no momento posterior com a média do mesmo grupo no momento anterior. 
+
+## Comparando o antes e depois dos tratados - Exemplo
+
+```{r, echo=T, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', ocoritnhiansut.width="1\\linewidth", warning=FALSE, message=FALSE, size='tiny'}
+id <- seq(1:5000) #id de cada indivíduo
+
+# distribuição normal truncada entre 0 e 1000
+renda_antes <- rtruncnorm(n=5000, a=0, b=1000, 
+                          mean=500, sd=200) 
+tratamento <- as.factor(rbinom(n=5000, size=1, prob=0.5))
+df <- data.frame(id, renda_antes, tratamento)
+df$renda_depois <-  renda_antes*1.1 + 
+  as.numeric(tratamento)*250 + 
+  rnorm(5000, mean = 50, sd = 50)
+
+```
+
+## Comparando o antes e depois dos tratados - Exemplo
+
+```{r, echo=T, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', ocoritnhiansut.width="1\\linewidth", warning=FALSE, message=FALSE, size='tiny'}
+plot1 <- df %>% 
+  pivot_longer(!c(id, tratamento), 
+               names_to = "tempo", 
+               values_to = "renda") %>%
+  ggplot() +
+  geom_boxplot(aes(x = tratamento, y = renda, color = tratamento)) +
+  facet_wrap(vars(tempo)) + 
+  theme_classic() +
+  #a partir daqui o código só inclui as anotações
+  geom_curve(data = data.frame(x = c(1.49, 0.66 ), y = c(120.16, 1126.31),
+  xend = c(2.357, 1.353), yend = c(759.364, 1114.47), 
+  tempo = "renda_depois"),
+  mapping = aes(x = x, y = y, xend = xend, yend = yend), curvature = -0.405, 
+  arrow = arrow(30L, unit(0.1, "inches"),
+  "last", "closed"), inherit.aes = FALSE) + 
+  geom_rect(data = data.frame(xmin = c(2.44, 1.47 ),
+  xmax = c(2.456, 1.4866), ymin = c(445.68, 848.14),
+  ymax = c(1096.72, 1090.801), tempo = "renda_depois"),
+  mapping = aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+  size = 1L, colour = "black", fill = "grey55", alpha = 0L, inherit.aes = FALSE) + 
+  geom_text(data = data.frame(x = c(1.491, 0.631, 0.631),
+  y = c(84.65, 1090.8019, 1090.801),
+  label = c("Efeito estimado pelo antes x depois", "Efeito real", "Efeito real"), 
+  tempo = "renda_depois"), size=2,
+  mapping = aes(x = x, y = y, label = label), inherit.aes = FALSE)
+
+```
+
+## Comparando o antes e depois dos tratados - Exemplo
+
+
+```{r, echo=T, eval=T, results='asis', fig.width=4.5, fig.height=2.5, fig.align='center', ocoritnhiansut.width="1\\linewidth", warning=FALSE, message=FALSE, size='tiny'}
+plot1
+```
+
+
+## Comparando o antes e depois dos tratados - Exemplo
+
+Veja que o efeito estimado por essa abordagem é bem maior que o efeito real.
+
+```{r, echo=T, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', ocoritnhiansut.width="1\\linewidth", warning=FALSE, message=FALSE, size='tiny'}
+
+tratados <- df %>%
+  filter(tratamento == 1)
+
+mean(tratados$renda_depois) - mean(tratados$renda_antes)
+
+```
+
+Se pudessemos de alguma forma garantir que houvesse estabilidade da variável de interesse e nenhuma influência de nenhum outro fator, o efeito estimado por este método seria igual ao efeito real. Entretanto, na prática, esse tipo de abordagem nunca pode ser utilizada.
+
+# Comparando tratados e não tratados
+
+## Comparando tratados e não tratados
+
+Muitas vezes, é possível que seja aventada a hipótese de comparar o grupo que sofreu o intervenção com o restante da população que não foi alvo da política. Isso pode acontecer porque não houve aleatorização e a política já foi implementada. Definimos o restante da população podem ser os outros indivíduos do local, ou de diferentes locais. Por exemplo, pode-se estimar o efeito de uma política em uma região, comparando o comportamento da variável de interesse nos municípios desta região com os de outra região, que não foi afetada. 
+
+## Comparando tratados e não tratados
+
+Mesmo que nós tenhamos um grupo de controle, ele não necessariamente é adequado para ser comparado com os indivíduos tratados. É necessário que o grupo de controle tenha características semelhantes ao de tratamento. Assim, políticas que visam a intervenção em grupos bastante específicos vão apresentar grupos de tratamento bastante diferentes do restante da sociedade.
+
+## Comparando tratados e não tratados - Exemplo
+
+Podemos utilizar o mesmo exemplo de anteriormente para demonstrar isso. Para isso, é preciso modificar um pouco a estrutura do que foi feito. Ao invés de realizar um estudo e aleatorizar a escolha de quem será tratado ou não, o gestor da política decidiu implementar a política com base nos mesmos critérios, sem a definição de um grupo de controle. Obviamente, a média da renda do restante da população é maior do que a do grupo alvo da política. Entretanto, assumimos a mesma relação entre a renda do período $t$ e do período $t+1$ e o mesmo efeito real do tratamento.
+
+## Comparando tratados e não tratados - Exemplo
+
+```{r, echo=T, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', ocoritnhiansut.width="1\\linewidth", warning=FALSE, message=FALSE, size='tiny'}
+
+
+tratados <- data.frame(renda_antes = rtruncnorm(n=5000, a=0, 
+                                                b=1000, mean=500, 
+                                                sd=200),
+                       id = seq(1:5000),
+                       tratamento = as.factor(1))
+
+restante <- data.frame(renda_antes = rtruncnorm(n=5000, a=1000, 
+                                                b=10000, mean=2000, 
+                                                sd=400),
+                       id = seq(5001:10000),
+                       tratamento = as.factor(0))
+
+df = rbind(tratados, restante)
+
+
+```
+
+## Comparando tratados e não tratados - Exemplo
+
+```{r, echo=T, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', ocoritnhiansut.width="1\\linewidth", warning=FALSE, message=FALSE, size='footnotesize'}
+
+
+
+df$renda_depois <-  df$renda_antes*1.1 + 
+  as.numeric(df$tratamento)*250 + 
+  rnorm(10000, mean = 50, sd = 50)
+
+plot2 <- df %>% 
+  pivot_longer(!c(id, tratamento), 
+               names_to = "tempo", 
+               values_to = "renda") %>%
+  ggplot() +
+  geom_boxplot(aes(x = tratamento, y = renda, color = tratamento)) +
+  facet_wrap(vars(tempo)) + 
+  theme_classic()
+
+
+```
+
+
+## Comparando tratados e não tratados - Exemplo
+
+```{r, echo=T, eval=T, results='asis', fig.width=4.5, fig.height=2.5, fig.align='center', ocoritnhiansut.width="1\\linewidth", warning=FALSE, message=FALSE, size='footnotesize'}
+
+plot2
+
+```
+
+## Comparando tratados e não tratados - Exemplo
+
+
+Perceba que o efeito desaparece, devido às características diferentes entre os dois grupos. Na verdade, quando estimamos um modelo de \textbf{diferenças-em-diferenças}, que detalharemos no decorrer do curso, o efeito estimado do tratamento torna-se negativo. 
+
+```{r, echo=T, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', ocoritnhiansut.width="1\\linewidth", warning=FALSE, message=FALSE, size='footnotesize'}
+
+diff = df %>% 
+  mutate(diff = renda_depois - renda_antes) %>%
+  group_by(tratamento) %>% 
+  summarise_at(vars(-id), funs(mean(., na.rm=TRUE)))
+  
+kable(diff)
+
+diff$diff[1] - diff$diff[2]
+```
+
+# Conclusão
+
+
+## Conclusão
+
+Assim, a escolha do grupo de controle se mostra essencial para o impacto estimado de uma política ser semelhante ao impacto real. Então, quando o grupo alvo de uma política diferir do restante da população em características relevantes, é preciso adequar o grupo de controle. A primeira possibilidade, que já vimos resumidamente é a de aleatorização. Esse é o modelo que pode ser considerado ideal, mas também apresenta dificuldades de execução e custos elevados. A segunda é buscar na população indivíduos com propriedades semelhantes aos tratados para compor o grupo de controle. Essas abordagens serão melhor detalhadas nas seções 4 e 6, respectivamente.
+
+
+# Referências
